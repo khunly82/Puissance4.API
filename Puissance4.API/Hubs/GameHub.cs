@@ -4,9 +4,9 @@ namespace Puissance4.API.Hubs
 {
     public class GameHub: Hub
     {
-        public void SayHello()
+        public void SayHello(string message)
         {
-            Clients.Others.SendAsync("OnMessage", "Hello");
+            Clients.Others.SendAsync("OnMessage", message);
         }
     }
 }
