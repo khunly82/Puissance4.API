@@ -18,7 +18,8 @@ namespace Puissance4.API.Controllers
             }
             return Ok(new
             {
-                Token = _jwtManager.CreateToken(dto.Username, dto.Username, dto.Username)
+                Token = _jwtManager.CreateToken(dto.Username, dto.Username, dto.Username),
+                // Username = dto.Username,
             });
         }
     }
