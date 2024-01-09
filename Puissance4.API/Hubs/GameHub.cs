@@ -47,6 +47,19 @@ namespace Puissance4.API.Hubs
             }
         }
 
+        public void Play(PlayDTO dto)
+        {
+            try
+            {
+                Game g = _gameService.Play(ConnectedUser, dto.GameId, dto.Col);
+                Clients.Group(dto.GameId).SendAsync("OnGame", g);
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("OnError", ex.Message);
+            }
+        }
+
 
 
         private string ConnectedUser

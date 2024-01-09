@@ -15,7 +15,7 @@ namespace Puissance4.API.Services
             }
 
             Game game = new Game();
-            if(color == Color.Red)
+            if (color == Color.Red)
             {
                 game.RedPlayer = userId;
             }
@@ -63,9 +63,43 @@ namespace Puissance4.API.Services
             return Games.FirstOrDefault(g => g.Value.RedPlayer == userId || g.Value.YellowPlayer == userId).Key;
         }
 
+        public Game Play(string userId, string gameId, int col) 
+        {
+            Game? g = Games.GetValueOrDefault(gameId);
+            if(g is null)
+            {
+                throw new Exception($"{gameId} does not exist");
+            }
+            Color? color = g.YellowPlayer == userId ? Color.Yellow : g.RedPlayer == userId ? Color.Red : null;
+            if(color is null)
+            {
+                throw new Exception("Vous ne pouvez jouer dans cette partie");
+            }
+            if(g.Turn != color)
+            {
+                throw new Exception("Ce n'est pas à vous de jouer");
+            }
+            int? h = GetFirstAvailable(g.Grid, col);
+            if(h is null)
+            {
+                throw new Exception("La colonne est remplie");
+            }
+            g.Grid[col, (int)h] = color;
+            g.Turn = g.Turn == Color.Yellow ? Color.Red : Color.Yellow;
+            return g;
+
+        }
+
+        private int? GetFirstAvailable(Color?[,] grid, int col)
+        {
+            return Enumerable.Range(0, 5)
+                .FirstOrDefault(i => grid[col, i] == null);
+        }
+
         public void Delete(string gameId)
         {
             Games.Remove(gameId);
         }
+
     }
 }

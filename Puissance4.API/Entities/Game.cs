@@ -7,5 +7,6 @@ namespace Puissance4.API.Entities
         public Color?[,] Grid { get; set; } = new Color?[7,6];
         public string RedPlayer { get; set; } = null!;
         public string YellowPlayer { get; set; } = null!;
+        public Color Turn { get; set; } = Color.Yellow;
     }
 }
