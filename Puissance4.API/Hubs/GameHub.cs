@@ -37,6 +37,7 @@ namespace Puissance4.API.Hubs
             {
                 _gameService.Join(ConnectedUser, gameId);
                 Clients.All.BroadCastGames();
+                Groups.AddToGroupAsync(Context.ConnectionId, gameId);
                 Game g = _gameService.FindById(gameId);
                 Clients.Group(gameId).SendAsync("OnGame", new GameDetailsDTO(g));
             }
