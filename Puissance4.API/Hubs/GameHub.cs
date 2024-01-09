@@ -23,7 +23,7 @@ namespace Puissance4.API.Hubs
                 Groups.AddToGroupAsync(Context.ConnectionId, idGame);
                 Clients.All.BroadCastGames();
                 Game g = _gameService.FindById(idGame);
-                Clients.Caller.SendAsync("OnGame", new GameDetailsDTO(g));
+                Clients.Caller.SendAsync("OnGame", new GameDetailsDTO(g, idGame));
             }
             catch (Exception ex)
             {
@@ -39,7 +39,7 @@ namespace Puissance4.API.Hubs
                 Clients.All.BroadCastGames();
                 Groups.AddToGroupAsync(Context.ConnectionId, gameId);
                 Game g = _gameService.FindById(gameId);
-                Clients.Group(gameId).SendAsync("OnGame", new GameDetailsDTO(g));
+                Clients.Group(gameId).SendAsync("OnGame", new GameDetailsDTO(g, gameId));
             }
             catch (Exception ex)
             {
@@ -52,7 +52,7 @@ namespace Puissance4.API.Hubs
             try
             {
                 Game g = _gameService.Play(ConnectedUser, dto.GameId, dto.Col);
-                Clients.Group(dto.GameId).SendAsync("OnGame", g);
+                Clients.Group(dto.GameId).SendAsync("OnGame", new GameDetailsDTO(g, dto.GameId));
             }
             catch (Exception ex)
             {

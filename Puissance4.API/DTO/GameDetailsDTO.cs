@@ -7,8 +7,9 @@ namespace Puissance4.API.DTO
     {
         public List<List<Color?>> Grid { get; set; }
 
-        public GameDetailsDTO(Game game)
+        public GameDetailsDTO(Game game, string gameId)
         {
+            GameId = gameId;
             YellowPlayer = game.YellowPlayer;
             RedPlayer = game.RedPlayer;
             Grid = new List<List<Color?>>();
