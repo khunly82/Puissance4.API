@@ -1,6 +1,8 @@
 using Be.Khunly.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Puissance4.API.DependencyInjections;
 using Puissance4.API.Hubs;
+using Puissance4.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +24,30 @@ builder.Services.AddCors(b => b
         .AllowCredentials()
     ));
 
+builder.Services.AddScoped<GameService>();
+
 builder.Services.AddSignalR();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
+});
 
 var app = builder.Build();
 
@@ -35,6 +60,7 @@ var app = builder.Build();
 
 app.UseCors();
 
+app.UseAuthentication();
 app.UseAuthorization();  
  
 app.MapControllers();
