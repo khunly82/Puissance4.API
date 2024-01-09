@@ -33,15 +33,15 @@ namespace Puissance4.API.Services
             Game? g = Games.GetValueOrDefault(gameId);
             if(g is null)
             {
-                throw new Exception($"{gameId} is not a game");
+                throw new Exception("This game does not exist");
             }
             if(g.YellowPlayer != null && g.RedPlayer != null)
             {
-                throw new Exception();
+                throw new Exception("This game is already full");
             }
             if(g.YellowPlayer == userId || g.RedPlayer == userId)
             {
-                throw new Exception();
+                throw new Exception("You're already in this game");
             }
             if(g.YellowPlayer == null)
             {
@@ -51,6 +51,11 @@ namespace Puissance4.API.Services
             {
                 g.RedPlayer = userId;
             }
+        }
+
+        public Game? FindById(string gameId)
+        {
+            return Games.GetValueOrDefault(gameId);
         }
 
         public string? FindByPlayer(string userId)

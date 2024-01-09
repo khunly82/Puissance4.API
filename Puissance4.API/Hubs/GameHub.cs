@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.SignalR;
 using Puissance4.API.DTO;
 using Puissance4.API.Entities;
 using Puissance4.API.Services;
-using System;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 
 namespace Puissance4.API.Hubs
@@ -24,13 +22,29 @@ namespace Puissance4.API.Hubs
                 string idGame = _gameService.Add(ConnectedUser, dto.SelectedColor);
                 Groups.AddToGroupAsync(Context.ConnectionId, idGame);
                 Clients.All.BroadCastGames();
+                Clients.Caller.SendAsync("OnGame", _gameService.FindById(idGame));
             }
             catch (Exception ex)
             {
                 Clients.Caller.SendAsync("OnError", ex.Message);
-                throw;
             }
         }
+
+        public void Join(string gameId)
+        {
+            try
+            {
+                _gameService.Join(ConnectedUser, gameId);
+                Clients.All.BroadCastGames();
+                Clients.Group(gameId).SendAsync("OnGame", _gameService.FindById(gameId));
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.SendAsync("OnError", ex.Message);
+            }
+        }
+
+
 
         private string ConnectedUser
         {
