@@ -52,5 +52,15 @@ namespace Puissance4.API.Services
                 g.RedPlayer = userId;
             }
         }
+
+        public string? FindByPlayer(string userId)
+        {
+            return Games.FirstOrDefault(g => g.Value.RedPlayer == userId || g.Value.YellowPlayer == userId).Key;
+        }
+
+        public void Delete(string gameId)
+        {
+            Games.Remove(gameId);
+        }
     }
 }
