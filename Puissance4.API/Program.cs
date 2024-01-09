@@ -1,8 +1,11 @@
 using Be.Khunly.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Puissance4.API.DependencyInjections;
 using Puissance4.API.Hubs;
 using Puissance4.API.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +45,15 @@ builder.Services.AddAuthentication(options =>
 
             if (!string.IsNullOrEmpty(accessToken))
             {
-                context.Token = accessToken;
+                context.HttpContext.User = new JwtSecurityTokenHandler().ValidateToken(accessToken, new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Signature"])),
+                    ValidateLifetime = false,
+                }, out SecurityToken t); ; ;
             }
             return Task.CompletedTask;
         }
