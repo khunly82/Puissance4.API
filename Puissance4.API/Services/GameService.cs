@@ -92,8 +92,8 @@ namespace Puissance4.API.Services
 
         private int? GetFirstAvailable(Color?[,] grid, int col)
         {
-            return Enumerable.Range(0, 5)
-                .FirstOrDefault(i => grid[col, i] == null);
+            return Enumerable.Range(0, 6).Cast<int?>()
+                .FirstOrDefault(i => grid[col,(int) i] == null);
         }
 
         public void Delete(string gameId)
